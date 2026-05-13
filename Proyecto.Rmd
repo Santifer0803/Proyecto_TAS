@@ -14,6 +14,20 @@ Se inicia cargando las librerías necesarias para el desarrollo del trabajo.
 ```{r librerias}
 pacman::p_load(dplyr,
                ggplot2,
+               readr,
                skimr)
+```
+
+## Datos
+
+Se cargan los datos necesarios.
+
+```{r carga_datos}
+datos <- read_delim(
+  "data/Motor vehicle insurance data.csv",
+  delim = ";",
+  escape_double = FALSE,
+  trim_ws = TRUE
+)
 ```
 
