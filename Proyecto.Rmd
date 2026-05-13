@@ -38,3 +38,31 @@ Ahora se limpia el nombre de los datos.
 datos <- clean_names(datos)
 ```
 
+Se ajusta el formato de las fechas.
+
+```{r formato_fechas}
+# Fecha de inicio del contrato
+datos <- datos %>%
+  mutate(date_start_contract = as.Date(date_start_contract, format = "%d/%m/%Y"))
+
+# Fecha de la última renovación del contrato
+datos <- datos %>%
+  mutate(date_last_renewal = as.Date(date_last_renewal, format = "%d/%m/%Y"))
+
+# Fecha de la próxima renovación del contrato
+datos <- datos %>%
+  mutate(date_next_renewal = as.Date(date_next_renewal, format = "%d/%m/%Y"))
+
+# Fecha de nacimiento
+datos <- datos %>%
+  mutate(date_birth = as.Date(date_birth, format = "%d/%m/%Y"))
+
+# Fecha de emisión de la licencia
+datos <- datos %>%
+  mutate(date_driving_licence = as.Date(date_driving_licence, format = "%d/%m/%Y"))
+
+# Fecha de cancelación de la póliza, en caso de ocurrir
+datos <- datos %>%
+  mutate(date_lapse = as.Date(date_lapse, format = "%d/%m/%Y"))
+```
+
