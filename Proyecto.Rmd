@@ -14,6 +14,7 @@ Se inicia cargando las librerías necesarias para el desarrollo del trabajo.
 ```{r librerias}
 pacman::p_load(dplyr,
                ggplot2,
+               janitor,
                readr,
                skimr)
 ```
@@ -29,5 +30,11 @@ datos <- read_delim(
   escape_double = FALSE,
   trim_ws = TRUE
 )
+```
+
+Ahora se limpia el nombre de los datos.
+
+```{r nombres_datos}
+datos <- clean_names(datos)
 ```
 
