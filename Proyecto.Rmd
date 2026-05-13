@@ -5,4 +5,15 @@ date: "`r Sys.Date()`"
 output: html_document
 ---
 
+# Preparación inicial
+
+## Librerías
+
+Se inicia cargando las librerías necesarias para el desarrollo del trabajo.
+
+```{r librerias}
+pacman::p_load(dplyr,
+               ggplot2,
+               skimr)
+```
 
