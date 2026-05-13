@@ -21,7 +21,7 @@ pacman::p_load(dplyr,
 
 ## Datos
 
-Se cargan los datos necesarios.
+Ahora se cargan los datos necesarios.
 
 ```{r carga_datos}
 datos <- read_delim(
@@ -32,13 +32,13 @@ datos <- read_delim(
 )
 ```
 
-Ahora se limpia el nombre de los datos.
+Luego, se limpia el nombre de los datos.
 
 ```{r nombres_datos}
 datos <- clean_names(datos)
 ```
 
-Se ajusta el formato de las fechas.
+A continuación, se ajusta el formato de las fechas.
 
 ```{r formato_fechas}
 # Fecha de inicio del contrato
@@ -66,3 +66,60 @@ datos <- datos %>%
   mutate(date_lapse = as.Date(date_lapse, format = "%d/%m/%Y"))
 ```
 
+Después, se corrige el formato de las variables que deberían ser factores.
+
+```{r factores_datos}
+# Medio de obtención de la póliza
+datos <- datos %>%
+  mutate(distribution_channel = factor(
+    distribution_channel,
+    levels = c(0, 1),
+    labels = c("agente", "corredora")
+  ))
+
+# Duración de la póliza
+datos <- datos %>%
+  mutate(payment = factor(
+    payment,
+    levels = c(0, 1),
+    labels = c("anual", "semestral")
+  ))
+
+# Tipo de vehículo
+datos <- datos %>%
+  mutate(type_risk = factor(
+    type_risk,
+    levels = c(1, 2, 3, 4),
+    labels = c("motocicleta", "van", "automovil", "agricola")
+  ))
+
+# Área de residencia
+datos <- datos %>%
+  mutate(area = factor(
+    area,
+    levels = c(0, 1),
+    labels = c("rural", "urbana")
+  ))
+
+# Cantidad de conductores
+datos <- datos %>%
+  mutate(second_driver = factor(
+    second_driver,
+    levels = c(0, 1),
+    labels = c("unico", "multiples")
+  ))
+
+# Cantidad de puertas
+datos <- datos %>%
+  mutate(n_doors = factor(
+    n_doors
+  ))
+
+# Tipo de combustible
+datos <- datos %>%
+  mutate(type_fuel = factor(
+    type_fuel,
+    levels = c("P", "D"),
+    labels = c("gasolina", "diesel")
+  ))
+```
