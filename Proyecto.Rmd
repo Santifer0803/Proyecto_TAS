@@ -12,9 +12,11 @@ output: html_document
 Se inicia cargando las librerías necesarias para el desarrollo del trabajo.
 
 ```{r librerias}
-pacman::p_load(dplyr,
+pacman::p_load(corrplot,
+               dplyr,
                ggplot2,
                janitor,
+               lubridate,
                readr,
                skimr)
 ```
@@ -123,3 +125,7 @@ datos <- datos %>%
     labels = c("gasolina", "diesel")
   ))
 ```
+
+# Análisis exploratorio de datos
+
+Dado que el proyecto busca predecir el comportamiento de la prima pura, todo el análisis está orientado alrededor de esta variable y los factores que podrían llegar a afectarla.
