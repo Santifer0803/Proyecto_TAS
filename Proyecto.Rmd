@@ -129,3 +129,21 @@ datos <- datos %>%
 # Análisis exploratorio de datos
 
 Dado que el proyecto busca predecir el comportamiento de la prima pura, todo el análisis está orientado alrededor de esta variable y los factores que podrían llegar a afectarla.
+
+## Variables sintéticas
+
+Con el objetivo de explicar cómo está conformada la base de datos, se crean algunas variables sintéticas para, posteriormente, describirse con mayor facilidad. Esto funciona como un resumen que permite entender estadísticas descriptivas para cada persona en la base de datos.
+
+```{r var_sint}
+# Resumen de los datos por persona
+resumen <- datos %>%
+  group_by(id) %>%
+  summarise(
+    inicio = min(date_start_contract),  # Fecha de inicio del contrato
+    reciente = max(date_last_renewal),  # Fecha de la última renovación
+    coste_sin = sum(cost_claims_year),  # Suma de coste de siniestros por persona
+    .groups = "drop"
+  ) %>% 
+  mutate(primera_poliza = (inicio == reciente)) # Indicadora de primer año con la aseguradora
+```
+
