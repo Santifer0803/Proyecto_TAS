@@ -186,6 +186,13 @@ mean(resumen$primera_poliza)
 mean(resumen$coste_sin == 0)
 ```
 
+Adicionalmente, el porcentaje de pólizas que presentan una siniestralidad de 0 dólares.
+
+```{r sinis_polizas}
+mean(datos$cost_claims_year == 0)
+```
+
+
 ## Análisis gráfico de las variables
 
 ### Variable objetivo
@@ -237,4 +244,6 @@ datos %>%
   labs(x = "Año de obtención de licencia", y = "Monto en dólares") +
   theme_minimal()
 ```
+
+### Análisis de variables categóricas
 
