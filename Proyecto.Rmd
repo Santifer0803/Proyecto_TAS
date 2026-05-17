@@ -191,10 +191,34 @@ Para iniciar el análisis, se presenta un gráfico con la variable objetivo de l
 ```{r graf_objetivo}
 datos %>% 
   ggplot(aes(x = cost_claims_year)) +
-  geom_histogram(bins = 50, fill = "#DD5F20") +
+  geom_histogram(bins = 50, fill = "#D72E3E") +
   labs(x = "Coste del siniestro", y = "Cantidad de pólizas") +
   theme_minimal()
 ```
 
 ### Análisis de las fechas
+
+Para esta parte, se empieza con el desglose del gasto de prima pura por año. Esto corresponde al monto total que la aseguradora ha tenido que otorgarle a los asegurados en cada año.
+
+```{r coste_anual}
+datos %>% 
+  group_by(anno_renovar) %>% 
+  summarise(monto = sum(cost_claims_year)) %>% 
+  ggplot(aes(x = anno_renovar, y = monto)) +
+  geom_col(fill = "#D72E3E") +
+  labs(x = "Año de la última renovación", y = "Monto en dólares") +
+  theme_minimal()
+```
+
+Posteriormente, se replica el análisis con el año de nacimiento de las personas, con el objetivo de ver si existe algún patrón relevante en esta variable.
+
+```{r coste_nacimiento}
+datos %>% 
+  group_by(anno_nacimiento) %>% 
+  summarise(monto = sum(cost_claims_year)) %>% 
+  ggplot(aes(x = anno_nacimiento, y = monto)) +
+  geom_col(fill = "#D72E3E", color = "white") +
+  labs(x = "Año de nacimiento", y = "Monto en dólares") +
+  theme_minimal()
+```
 
