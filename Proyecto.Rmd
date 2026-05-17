@@ -541,3 +541,28 @@ datos %>%
   labs(x = "Exposición", y = "Densidad") +
   theme_minimal()
 ```
+
+Después, para finalizar este análisis, se presenta el gráfico de correlaciones de las variables numéricas.
+
+```{r corrplot}
+datos %>% 
+  transmute(antiguedad = seniority,
+         polizas_activas = policies_in_force,
+         polizas_max = max_policies,
+         productos_max = max_products,
+         cancelados = lapse,
+         prima = premium,
+         prima_pura = cost_claims_year,
+         frecuencia = n_claims_year,
+         reclamos_hist = n_claims_history,
+         ratio_hist = r_claims_history,
+         anno_fabricacion = year_matriculation,
+         poder = power,
+         cilindrada = cylinder_capacity,
+         valor = value_vehicle,
+         peso = weight,
+         exposicion = exposicion) %>% 
+  cor(use = "complete.obs") %>% 
+  corrplot(type = "upper")
+```
+
