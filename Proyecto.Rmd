@@ -247,11 +247,13 @@ datos %>%
 
 ### Análisis de variables categóricas
 
+#### Análisis individual
+
 
 
 #### Comparación con la variable objetivo
 
-Para esta sección, se procede a realizar un análisis detallado de cada una de las variables categóricas con respecto a la variable objetivo.
+Para esta sección, se procede a realizar un análisis detallado de cada una de las variables categóricas con respecto a la variable objetivo. Aunque no se utiliza en la descripción del documento final, se deja como evidencia de que este no es el mejor tipo de análisis para este caso.
 
 ```{r coste_categoricas}
 # Coste de siniestralidad por canal de distribución
