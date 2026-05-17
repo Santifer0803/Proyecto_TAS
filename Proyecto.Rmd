@@ -132,9 +132,22 @@ Dado que el proyecto busca predecir el comportamiento de la prima pura, todo el 
 
 ## Variables sintéticas
 
-Con el objetivo de explicar cómo está conformada la base de datos, se crean algunas variables sintéticas para, posteriormente, describirse con mayor facilidad. Esto funciona como un resumen que permite entender estadísticas descriptivas para cada persona en la base de datos.
+Con el objetivo de explicar cómo está conformada la base de datos, se crean algunas variables sintéticas para, posteriormente, describirse con mayor facilidad.
 
 ```{r var_sint}
+# Año de la última renovación de la póliza
+datos <- datos %>% 
+  mutate(anno_renovar = year(date_last_renewal))
+
+# Exposición global de las personas, con corte al 31-12-2018
+datos <- datos %>%
+  mutate(exposicion = pmin(1, ((as.Date("2018-12-31") - date_last_renewal) / as.numeric(date_next_renewal - date_last_renewal)
+  )))
+
+# Corrección para las pólizas antigüas
+datos <- datos %>% 
+  mutate(exposicion = ifelse(exposicion == 1, 0, exposicion))
+
 # Resumen de los datos por persona
 resumen <- datos %>%
   group_by(id) %>%
