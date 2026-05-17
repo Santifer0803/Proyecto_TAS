@@ -178,3 +178,18 @@ mean(resumen$primera_poliza)
 mean(resumen$coste_sin == 0)
 ```
 
+## Análisis gráfico de las variables
+
+### Variable objetivo
+
+Para iniciar el análisis, se presenta un gráfico con la variable objetivo de los datos.
+
+```{r graf_objetivo}
+datos %>% 
+  ggplot(aes(x = cost_claims_year)) +
+  geom_histogram(bins = 50, fill = "#DD5F20") +
+  labs(x = "Coste del siniestro", y = "Cantidad de pólizas") +
+  theme_minimal()
+```
+
+### Análisis de las fechas
