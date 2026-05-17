@@ -357,7 +357,7 @@ datos %>%
 
 Como se vió anteriormente con las variables categóricas, la comparación con la variable objetivo es complicada debido a la gran cantidad de valores 0 presentes en estos datos. Además, resumir las variables numéricas en una única tabla suele resultar en una gran cantidad de números difíciles de entender para el público general.
 
-Con todo esto, se decidió que la mejor opción era representar estas variables individualmente, a través de gráficos descriptivos que permitan dilucidar su comportamiento.
+Con todo esto, se decidió que la mejor opción era representar estas variables individualmente, a través de gráficos descriptivos que permitan dilucidar su comportamiento. Así, se procede a iniciar con las variables numéricas de la aseguradora.
 
 ```{r numericas_aseguradora}
 # Histograma de antigüedad de los clientes
@@ -459,3 +459,85 @@ datos %>%
   theme_minimal()
 ```
 
+Luego, se continúa con las variables numéricas sobre la información de los vehículos.
+
+```{r numericas_vehiculos}
+# Para no repetir vehículos, se toma aquellos con la matrícula más reciente
+datos %>%
+  group_by(id) %>%
+  summarise(
+    anno = max(year_matriculation),
+    .groups = "drop"
+  ) %>% 
+  ggplot(aes(x = anno)) +
+  geom_histogram(binwidth = 1, fill = "#D72E3E", color = "white") +
+  labs(x = "Año de matrícula del vehículo", y = "Cantidad") +
+  theme_minimal()
+
+# Histograma de poder del vehículo
+datos %>%
+  group_by(id) %>%
+  summarise(
+    poder = max(power),
+    .groups = "drop"
+  ) %>% 
+  ggplot(aes(x = poder)) +
+  geom_histogram(binwidth = 50, fill = "#D72E3E", color = "white") +
+  labs(x = "Caballos de fuerza del vehículo", y = "Cantidad") +
+  theme_minimal()
+
+# Histograma de la cilindrada del vehículo
+datos %>%
+  group_by(id) %>%
+  summarise(
+    cilin = max(cylinder_capacity),
+    .groups = "drop"
+  ) %>% 
+  ggplot(aes(x = cilin)) +
+  geom_histogram(binwidth = 200, fill = "#D72E3E", color = "white") +
+  labs(x = "Cilindrada", y = "Cantidad") +
+  theme_minimal()
+
+# Histograma del valor del vehículo
+datos %>%
+  group_by(id) %>%
+  summarise(
+    valor = max(value_vehicle),
+    .groups = "drop"
+  ) %>% 
+  ggplot(aes(x = valor)) +
+  geom_histogram(binwidth = 10000, fill = "#D72E3E", color = "white") +
+  labs(x = "Valor del vehículo", y = "Cantidad") +
+  theme_minimal()
+
+# Histograma del largo del vehículo
+datos %>%
+  group_by(id) %>%
+  summarise(
+    largo = max(length),
+    .groups = "drop"
+  ) %>% 
+  ggplot(aes(x = largo)) +
+  geom_histogram(binwidth = 0.5, fill = "#D72E3E", color = "white") +
+  labs(x = "Longitud del vehículo (m)", y = "Cantidad") +
+  theme_minimal()
+
+# Histograma del largo del vehículo
+datos %>%
+  group_by(id) %>%
+  summarise(
+    peso = max(weight),
+    .groups = "drop"
+  ) %>% 
+  ggplot(aes(x = peso)) +
+  geom_histogram(binwidth = 100, fill = "#D72E3E", color = "white") +
+  labs(x = "Peso del vehículo (kg)", y = "Cantidad") +
+  theme_minimal()
+
+# Densidad de la exposición
+datos %>% 
+  ggplot(aes(x = exposicion)) +
+  geom_density(color = "#D72E3E") +
+  labs(x = "Exposición", y = "Densidad") +
+  theme_minimal()
+```
