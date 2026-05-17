@@ -226,3 +226,15 @@ datos %>%
   theme_minimal()
 ```
 
+Después, se replica el análisis para el año en que las personas obtuvieron su primer licencia de conducir.
+
+```{r coste_licencia}
+datos %>% 
+  group_by(anno_licencia) %>% 
+  summarise(monto = sum(cost_claims_year)) %>% 
+  ggplot(aes(x = anno_licencia, y = monto)) +
+  geom_col(fill = "#D72E3E", color = "white") +
+  labs(x = "Año de obtención de licencia", y = "Monto en dólares") +
+  theme_minimal()
+```
+
