@@ -217,7 +217,7 @@ datos %>%
   summarise(monto = sum(cost_claims_year)) %>% 
   ggplot(aes(x = anno_renovar, y = monto)) +
   geom_col(fill = "#D72E3E") +
-  labs(x = "Año de la última renovación", y = "Monto en dólares") +
+  labs(x = "Año de la última renovación", y = "Coste total de siniestros") +
   theme_minimal()
 ```
 
@@ -229,7 +229,7 @@ datos %>%
   summarise(monto = sum(cost_claims_year)) %>% 
   ggplot(aes(x = anno_nacimiento, y = monto)) +
   geom_col(fill = "#D72E3E", color = "white") +
-  labs(x = "Año de nacimiento", y = "Monto en dólares") +
+  labs(x = "Año de nacimiento", y = "Coste total de siniestros") +
   theme_minimal()
 ```
 
@@ -241,9 +241,66 @@ datos %>%
   summarise(monto = sum(cost_claims_year)) %>% 
   ggplot(aes(x = anno_licencia, y = monto)) +
   geom_col(fill = "#D72E3E", color = "white") +
-  labs(x = "Año de obtención de licencia", y = "Monto en dólares") +
+  labs(x = "Año de obtención de licencia", y = "Coste total de siniestros") +
   theme_minimal()
 ```
 
 ### Análisis de variables categóricas
+
+
+
+#### Comparación con la variable objetivo
+
+Para esta sección, se procede a realizar un análisis detallado de cada una de las variables categóricas con respecto a la variable objetivo.
+
+```{r coste_categoricas}
+# Coste de siniestralidad por canal de distribución
+datos %>% 
+  ggplot(aes(x = distribution_channel, y = cost_claims_year)) +
+  geom_boxplot(fill = "#D72E3E") +
+  labs(x = "Canal de distribución", y = "Coste total de siniestros") +
+  theme_minimal()
+
+# Coste de siniestralidad por frecuencia de pago
+datos %>% 
+  ggplot(aes(x = payment, y = cost_claims_year)) +
+  geom_boxplot(fill = "#D72E3E") +
+  labs(x = "Frecuencia de pago", y = "Coste total de siniestros") +
+  theme_minimal()
+
+# Coste de siniestralidad por tipo de vehículo
+datos %>% 
+  ggplot(aes(x = type_risk, y = cost_claims_year)) +
+  geom_boxplot(fill = "#D72E3E") +
+  labs(x = "Tipo de vehículo", y = "Coste total de siniestros") +
+  theme_minimal()
+
+# Coste de siniestralidad por área
+datos %>% 
+  ggplot(aes(x = area, y = cost_claims_year)) +
+  geom_boxplot(fill = "#D72E3E") +
+  labs(x = "Área", y = "Coste total de siniestros") +
+  theme_minimal()
+
+# Coste de siniestralidad por cantidad de conductores
+datos %>% 
+  ggplot(aes(x = second_driver, y = cost_claims_year)) +
+  geom_boxplot(fill = "#D72E3E") +
+  labs(x = "Cantidad de conductores", y = "Coste total de siniestros") +
+  theme_minimal()
+
+# Coste de siniestralidad por número de puertas
+datos %>% 
+  ggplot(aes(x = n_doors, y = cost_claims_year)) +
+  geom_boxplot(fill = "#D72E3E") +
+  labs(x = "Cantidad de puertas", y = "Coste total de siniestros") +
+  theme_minimal()
+
+# Coste de siniestralidad por tipo de combustible
+datos %>% 
+  ggplot(aes(x = type_fuel, y = cost_claims_year)) +
+  geom_boxplot(fill = "#D72E3E") +
+  labs(x = "Tipo de combustible", y = "Coste total de siniestros") +
+  theme_minimal()
+```
 
