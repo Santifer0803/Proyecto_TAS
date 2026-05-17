@@ -160,3 +160,21 @@ resumen <- datos %>%
   mutate(primera_poliza = (inicio == reciente)) # Indicadora de primer año con la aseguradora
 ```
 
+## Resumen descriptivo
+
+Con el objetivo de resumir la información de la base de datos, se muestra el análisis de 5 números, al igual que la información sobre los datos nulos.
+
+```{r descripcion_datos}
+skim(datos)
+```
+
+Posteriormente, se da la información general que se puede extraer del resumen realizado.
+
+```{r descripcion_resumen}
+# Porcentaje de personas con póliza por primera vez con la aseguradora
+mean(resumen$primera_poliza)
+
+# Porcentaje de personas que no han tenido siniestros con un coste
+mean(resumen$coste_sin == 0)
+```
+
