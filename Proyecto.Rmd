@@ -360,6 +360,102 @@ Como se vió anteriormente con las variables categóricas, la comparación con l
 Con todo esto, se decidió que la mejor opción era representar estas variables individualmente, a través de gráficos descriptivos que permitan dilucidar su comportamiento.
 
 ```{r numericas_aseguradora}
-# D
+# Histograma de antigüedad de los clientes
+datos %>%
+  group_by(id) %>%
+  summarise(
+    antiguedad = max(seniority),
+    .groups = "drop"
+  ) %>% 
+  ggplot(aes(x = antiguedad)) +
+  geom_histogram(binwidth = 1, fill = "#D72E3E", color = "white") +
+  labs(x = "Años asegurando al cliente", y = "Cantidad") +
+  theme_minimal()
+
+# Histograma de cantidad de pólizas actuales
+datos %>%
+  group_by(id) %>%
+  summarise(
+    polizas_actuales = max(policies_in_force),
+    .groups = "drop"
+  ) %>% 
+  ggplot(aes(x = polizas_actuales)) +
+  geom_histogram(binwidth = 1, fill = "#D72E3E", color = "white") +
+  labs(x = "Pólizas actuales", y = "Cantidad") +
+  theme_minimal()
+
+# Histograma de cantidad máxima de pólizas
+datos %>%
+  group_by(id) %>%
+  summarise(
+    polizas_maximas = max(max_policies),
+    .groups = "drop"
+  ) %>% 
+  ggplot(aes(x = polizas_maximas)) +
+  geom_histogram(binwidth = 1, fill = "#D72E3E", color = "white") +
+  labs(x = "Máximo de pólizas", y = "Cantidad") +
+  theme_minimal()
+
+# Histograma de cantidad máxima de productos
+datos %>%
+  group_by(id) %>%
+  summarise(
+    productos_maximos = max(max_products),
+    .groups = "drop"
+  ) %>% 
+  ggplot(aes(x = productos_maximos)) +
+  geom_histogram(binwidth = 1, fill = "#D72E3E", color = "white") +
+  labs(x = "Máximo de productos", y = "Cantidad") +
+  theme_minimal()
+
+# Histograma de cantidad de pólizas canceladas
+datos %>%
+  group_by(id) %>%
+  summarise(
+    canceladas = max(lapse),
+    .groups = "drop"
+  ) %>% 
+  ggplot(aes(x = canceladas)) +
+  geom_histogram(binwidth = 1, fill = "#D72E3E", color = "white") +
+  labs(x = "Pólizas canceladas", y = "Cantidad") +
+  theme_minimal()
+
+# Histograma de primas
+datos %>%
+  ggplot(aes(x = premium)) +
+  geom_histogram(binwidth = 100, fill = "#D72E3E", color = "white") +
+  labs(x = "Prima de la póliza", y = "Cantidad") +
+  theme_minimal()
+
+# Histograma de cantidad de accidentes por póliza
+datos %>%
+  ggplot(aes(x = n_claims_year)) +
+  geom_histogram(binwidth = 1, fill = "#D72E3E", color = "white") +
+  labs(x = "Número de reclamos en un año", y = "Cantidad") +
+  theme_minimal()
+
+# Histograma del histórico de reclamos
+datos %>%
+  group_by(id) %>%
+  summarise(
+    historia = max(n_claims_history),
+    .groups = "drop"
+  ) %>% 
+  ggplot(aes(x = historia)) +
+  geom_histogram(binwidth = 1, fill = "#D72E3E", color = "white") +
+  labs(x = "Cantidad histórica de reclamos", y = "Cantidad") +
+  theme_minimal()
+
+# Histograma del ratio histórico de reclamos
+datos %>%
+  group_by(id) %>%
+  summarise(
+    ratio = max(r_claims_history),
+    .groups = "drop"
+  ) %>% 
+  ggplot(aes(x = ratio)) +
+  geom_histogram(binwidth = 1, fill = "#D72E3E", color = "white") +
+  labs(x = "Ratio histórico de reclamos", y = "Cantidad") +
+  theme_minimal()
 ```
 
