@@ -182,6 +182,9 @@ skim(datos)
 Posteriormente, se da la información general que se puede extraer del resumen realizado.
 
 ```{r descripcion_resumen}
+# Cantidad de clientes de la aseguradora
+nrow(resumen)
+
 # Porcentaje de personas con póliza por primera vez con la aseguradora
 mean(resumen$primera_poliza)
 
@@ -348,5 +351,15 @@ datos %>%
   geom_boxplot(fill = "#D72E3E") +
   labs(x = "Tipo de combustible", y = "Coste total de siniestros") +
   theme_minimal()
+```
+
+### Análisis de variables numéricas
+
+Como se vió anteriormente con las variables categóricas, la comparación con la variable objetivo es complicada debido a la gran cantidad de valores 0 presentes en estos datos. Además, resumir las variables numéricas en una única tabla suele resultar en una gran cantidad de números difíciles de entender para el público general.
+
+Con todo esto, se decidió que la mejor opción era representar estas variables individualmente, a través de gráficos descriptivos que permitan dilucidar su comportamiento.
+
+```{r numericas_aseguradora}
+# D
 ```
 
