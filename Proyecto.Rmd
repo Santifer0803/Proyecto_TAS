@@ -139,6 +139,10 @@ Con el objetivo de explicar cómo está conformada la base de datos, se crean al
 datos <- datos %>% 
   mutate(anno_renovar = year(date_last_renewal))
 
+# Año de nacimiento
+datos <- datos %>% 
+  mutate(anno_nacimiento = year(date_birth))
+
 # Exposición global de las personas, con corte al 31-12-2018
 datos <- datos %>%
   mutate(exposicion = pmin(1, ((as.Date("2018-12-31") - date_last_renewal) / as.numeric(date_next_renewal - date_last_renewal)
@@ -193,3 +197,4 @@ datos %>%
 ```
 
 ### Análisis de las fechas
+
