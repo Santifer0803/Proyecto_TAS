@@ -16,9 +16,12 @@ pacman::p_load(corrplot,
                dplyr,
                ggplot2,
                janitor,
+               knitr,
                lubridate,
+               purrr,
                readr,
-               skimr)
+               skimr,
+               tidyr)
 ```
 
 ## Datos
@@ -249,7 +252,48 @@ datos %>%
 
 #### Análisis individual
 
+En este caso, para poder analizar las variables categóricas, se resumen sus principales características en una tabla.
 
+```{r resumen_categoricas}
+# Variables categóricas
+categoricas <- datos %>%
+  select(distribution_channel,
+         payment,
+         type_risk,
+         area,
+         second_driver,
+         n_doors,
+         type_fuel)
+
+# Resumen de la moda de cada variable
+modas <- map(names(categoricas), ~ {
+  tabyl(categoricas, !!sym(.x)) %>% # Usa la función para cada una de las variables del dataframe
+    rename(categoria = 1) %>%       # Renombra la primera columna para unificar
+    slice_max(n, n = 1) %>%         # Extrae la primera fila, aquella con la moda
+    mutate(variable = .x)           # Agrega una columna con el nombre de la variable
+}) %>%
+  list_rbind()                      # Une los resultados en un solo dataframe
+
+# Se reordena el dataframe
+modas <- modas %>% 
+  transmute(Variable = variable,
+            Moda = categoria,
+            Porcentaje = percent)
+
+# Se calcula la cantidad de categorías de cada variable
+modas <- modas %>% 
+  mutate(Cantidad_categorias = categoricas %>%
+  summarise(across(everything(), n_distinct)) %>%
+  pivot_longer(everything(),
+               names_to = "variable",
+               values_to = "n_categorias") %>% 
+    pull(n_categorias)
+  )
+
+# Se remueve el dataframe innecesario
+rm(categoricas)
+# cat(kable(modas, format = "latex"))
+```
 
 #### Comparación con la variable objetivo
 
