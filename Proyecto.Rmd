@@ -2,7 +2,19 @@
 title: "Proyecto"
 author: "Santiago Fernández Sáenz y Erick Venegas Espinoza"
 date: "`r Sys.Date()`"
-output: html_document
+output:
+  html_document:
+    toc: true
+    html-math-method: katex
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    theme:
+      version: 4
+      bootswatch: darkly
+      base_font: {google: "Roboto"}
+      heading_font: {google: "Roboto"}
+      code_font: {google: "Fira Code"}
 ---
 
 # Preparación inicial
