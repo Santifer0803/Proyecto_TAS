@@ -221,7 +221,7 @@ Para iniciar el análisis, se presenta un gráfico con la variable objetivo de l
 datos %>% 
   ggplot(aes(x = cost_claims_year)) +
   geom_histogram(bins = 50, fill = "#D72E3E") +
-  labs(x = "Coste del siniestro", y = "Cantidad de pólizas") +
+  labs(x = "Coste total de los siniestros", y = "Cantidad de pólizas") +
   theme_minimal()
 ```
 
