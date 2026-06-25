@@ -679,3 +679,19 @@ glm_tw <- glm(
 
 Luego, se ajusta un modelo similar al anterior, pero con el caso de un GAM.
 
+```{r gam_tweedie}
+# Se ajusta el modelo con el p estimado
+gam_tw <- gam(
+  siniestralidad_prom ~ type_risk + area + second_driver + year_matriculation + 
+                        power + cylinder_capacity + value_vehicle + n_doors + type_fuel,
+  offset = exposicion,
+  data   = entrena,
+  family = tw()
+)
+
+# Se ve el p estimado
+gam_tw$family$getTheta(TRUE)
+```
+
+
+
