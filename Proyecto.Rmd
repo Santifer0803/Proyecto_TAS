@@ -24,16 +24,22 @@ output:
 Se inicia cargando las librerías necesarias para el desarrollo del trabajo.
 
 ```{r librerias}
-pacman::p_load(corrplot,
+pacman::p_load(caret,
+               corrplot,
                dplyr,
                ggplot2,
                janitor,
                knitr,
                lubridate,
+               mgcv,
                purrr,
                readr,
+               rsample,
+               statmod,
                skimr,
-               tidyr)
+               tidyr,
+               tweedie
+               )
 ```
 
 ## Datos
@@ -171,6 +177,10 @@ datos <- datos %>%
 datos <- datos %>% 
   mutate(exposicion = ifelse(exposicion == 1, 0, exposicion))
 
+# Costo promedio de reclamos
+datos <- datos %>%
+  mutate(siniestralidad_prom = ifelse(n_claims_year == 0, 0, cost_claims_year / n_claims_year))
+
 # Resumen de los datos por persona
 resumen <- datos %>%
   group_by(id) %>%
@@ -209,7 +219,6 @@ Adicionalmente, el porcentaje de pólizas que presentan una siniestralidad de 0 
 ```{r sinis_polizas}
 mean(datos$cost_claims_year == 0)
 ```
-
 
 ## Análisis gráfico de las variables
 
@@ -577,4 +586,96 @@ datos %>%
   cor(use = "complete.obs") %>% 
   corrplot(type = "upper")
 ```
+
+# Ajuste de los modelos
+
+## Separación de los datos
+
+Se separan los datos en entrenamiento y prueba, con el objetivo de medir mejor la capacidad de los modelos.
+
+```{r separacion}
+# Semilla para reproducibilidad
+set.seed(333)
+
+# Partición de los datos
+separacion  <- initial_split(datos, prop = 0.8)
+
+# Datos de entrenamiento y testeo
+entrena <- training(separacion)
+prueba <- testing(separacion)
+
+# Se elimina la separación innecesaria
+rm(separacion)
+```
+
+## GLMs con ajuste gamma/poisson
+
+En primer lugar, se tiene el ajuste con GLM poisson (para la frecuencia).
+
+```{r glm_pois}
+# GLM Poisson con sobredispersión
+pois_sep <- glm(
+  n_claims_year ~ type_risk + area + second_driver + year_matriculation + power + cylinder_capacity + value_vehicle + n_doors + type_fuel,
+  offset = exposicion,
+  data = entrena,
+  family = quasipoisson(link = "log")
+)
+```
+
+Luego, se calcula el GLM Gamma (para la severidad).
+
+```{r glm_gamma}
+# Datos de entrenamiento modificado
+# entrena_mod <- entrena %>% 
+  # mutate(siniestralidad_prom = siniestralidad_prom + 1)
+
+# Datos de prueba modificado
+# prueba_mod <- prueba %>% 
+  # mutate(siniestralidad_prom = siniestralidad_prom + 1)
+
+# GLM Gamma
+#gamma_sep <- glm(
+#  siniestralidad_prom ~ type_risk + area + second_driver + year_matriculation + power + cylinder_capacity + value_vehicle + n_doors + type_fuel,
+#  offset = exposicion,
+#  data = entrena_mod,
+#  family = Gamma(link = "log")
+#)
+```
+
+El algoritmo de GLM Gamma diverge, no se llega a una solución del modelo, por lo que se omite este paso. Para no descartar totalmente este modelo, se usará la estimación de la frecuencia del GLM Poisson junto a la estimación ya hecha manualmente, aunque no sería muy realista en la práctica.
+
+La divergencia del modelo puede deberse a múltiples causas. No obstante, dado el problema que se está tratando, es probable que la enorme cantidad de valores bajos en la respuesta sea una limitante para el modelo. Aunque la variable se modifica artificialmente, eso no es suficiente para que un modelo tan simple logre una convergencia.
+
+## GLM con distribución Tweedie
+
+Posteriormente, se ajusta un GLM con la distribución Tweedie.
+
+```{r glm_tweedie}
+# Se inicia encontrando el parámetro p óptimo por máxima verosimilitud
+perfil <- tweedie_profile(
+  siniestralidad_prom ~ type_risk + area + second_driver + year_matriculation +
+    power + cylinder_capacity + value_vehicle + n_doors + type_fuel,
+  offset = exposicion,
+  data    = entrena,
+  p.vec   = seq(1.5, 1.7, by = 0.05),
+  method  = "series",
+  verbose = TRUE
+)
+
+# Se visualiza el p óptimo
+perfil$p.max
+
+# Se ajusta el modelo con el p óptimo
+glm_tw <- glm(
+  siniestralidad_prom ~ type_risk + area + second_driver + year_matriculation +
+    power + cylinder_capacity + value_vehicle + n_doors + type_fuel,
+  offset = exposicion,
+  data   = entrena,
+  family = tweedie(var.power = perfil$p.max, link.power = 0)
+)
+```
+
+## GAM con distribución Tweedie
+
+Luego, se ajusta un modelo similar al anterior, pero con el caso de un GAM.
 
