@@ -28,6 +28,7 @@ pacman::p_load(caret,
                corrplot,
                dplyr,
                ggplot2,
+               gratia,
                janitor,
                knitr,
                lubridate,
@@ -667,7 +668,7 @@ perfil$p.max
 
 # Se ajusta el modelo con el p óptimo
 glm_tw <- glm(
-  siniestralidad_prom ~ type_risk + area + second_driver + year_matriculation +
+  cost_claims_year ~ type_risk + area + second_driver + year_matriculation +
     power + cylinder_capacity + value_vehicle + n_doors + type_fuel,
   offset = exposicion,
   data   = entrena,
@@ -682,8 +683,8 @@ Luego, se ajusta un modelo similar al anterior, pero con el caso de un GAM.
 ```{r gam_tweedie}
 # Se ajusta el modelo con el p estimado
 gam_tw <- gam(
-  siniestralidad_prom ~ type_risk + area + second_driver + year_matriculation + 
-                        power + cylinder_capacity + value_vehicle + n_doors + type_fuel,
+  cost_claims_year ~ type_risk + area + second_driver + s(year_matriculation) + 
+                        s(power) + s(cylinder_capacity) + s(value_vehicle) + n_doors + type_fuel,
   offset = exposicion,
   data   = entrena,
   family = tw()
@@ -693,5 +694,68 @@ gam_tw <- gam(
 gam_tw$family$getTheta(TRUE)
 ```
 
+# Resultados
 
+Ahora, para visualizar algunos resultados, se empieza prediciendo los resultados de los datos de prueba.
+
+```{r prediccion}
+# Prediccion del GLM Poisson
+pred_glm_pois <- predict(pois_sep, newdata = prueba, type = "response")
+
+# Prediccion del GLM Tweedie
+pred_glm_tw <- predict(glm_tw, newdata = prueba, type = "response")
+
+# Prediccion del GLM Poisson
+pred_gam_tw <- predict(gam_tw, newdata = prueba, type = "response")
+```
+
+Para ver la primera comparativa, se calcula el MAE para cada uno de los modelos.
+
+```{r mae}
+data.frame(
+  glm_pois = c(mean(abs(
+    prueba$cost_claims_year - (prueba$siniestralidad_prom * pred_glm_pois)
+  ), na.rm = TRUE), sum(is.na(pred_glm_pois))),
+  glm_tw = c(mean(abs(prueba$cost_claims_year - pred_glm_tw), na.rm = TRUE), sum(is.na(pred_glm_tw))),
+  gam_tw = c(mean(abs(prueba$cost_claims_year - pred_gam_tw), na.rm = TRUE), sum(is.na(pred_gam_tw))),
+  row.names = c("MAE", "Nulos")
+)
+```
+
+El GLM Poisson tiene una mejor métrica porque solo ocupa calcular la frecuencia, ya que se asume que sabe perfectamente el valor de la siniestralidad.
+
+Posteriormente, se visualizan los residuos de respuesta de cada modelo. Estos son censurados por los valores tan extremos que existen en ellos.
+
+```{r resid}
+# Resumen comparativo
+summary(data.frame(
+    glm_tw = residuals(glm_tw, type = "response"),
+    gam_tw = residuals(gam_tw, type = "response")
+))
+
+# Gráfico de violín censurado
+data.frame(
+  "GLM" = residuals(glm_tw, type = "response"),
+  "GAM" = residuals(gam_tw, type = "response")
+) %>% 
+  pivot_longer(cols = everything(),
+               names_to  = "modelo",
+               values_to = "residuo") %>%
+  filter(residuo > -200,
+         residuo < 200) %>% 
+  ggplot(aes(x = modelo, y = residuo, fill = modelo)) +
+  geom_violin(alpha = 0.6) +
+  geom_hline(yintercept = 0,
+             color = "red",
+             linetype = "dashed") +
+  labs(x     = "Modelo", y     = "Residuo", title = "Distribución de residuos por modelo") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+Finalmente, se muestra la relación no lineal aprendida por las funciones suavizadas en el GAM.
+
+```{r grafico_gam}
+draw(gam_tw, residuals = TRUE)
+```
 
