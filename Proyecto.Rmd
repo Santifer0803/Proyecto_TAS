@@ -639,7 +639,7 @@ Luego, se calcula el GLM Gamma (para la severidad).
 #  siniestralidad_prom ~ type_risk + area + second_driver + year_matriculation + power + cylinder_capacity + value_vehicle + n_doors + type_fuel,
 #  offset = exposicion,
 #  data = entrena_mod,
-#  family = Gamma(link = "log")
+#  family = Gamma(link = "inverse")
 #)
 ```
 
